@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.apttrade.web.mapper.PriceTrendMapper">
+
+	<resultMap id="MonthlyPriceSummaryResultMap"
+		type="MonthlyPriceSummaryVO">
+		<id column="id" property="id" />
+		<result column="sgg_cd" property="sggCd" />
+		<result column="sgg_nm" property="sggNm" />
+		<result column="deal_year" property="dealYear" />
+		<result column="deal_month" property="dealMonth" />
+		<result column="trade_count" property="tradeCount" />
+		<result column="avg_price" property="avgPrice" />
+		<result column="avg_price_per_pyeong"
+			property="avgPricePerPyeong" />
+		<result column="price_change_rate" property="priceChangeRate" />
+	</resultMap>
+
+	<select id="selectMonthlyTrendByRegion" parameterType="string"
+		resultMap="MonthlyPriceSummaryResultMap">
+		<choose>
+			<!-- sggCd가 없으면 서울 전체를 연/월 단위로 합산(가중평균)하여 반환 -->
+			<when test="sggCd == null or sggCd == ''">
+				SELECT
+				NULL AS id,
+				NULL AS sgg_cd,
+				'서울 전체' AS sgg_nm,
+				deal_year,
+				deal_month,
+				SUM(trade_count) AS trade_count,
+				ROUND(SUM(avg_price * trade_count) / SUM(trade_count)) AS avg_price,
+				ROUND(SUM(avg_price_per_pyeong * trade_count) / SUM(trade_count), 2)
+				AS avg_price_per_pyeong,
+				NULL AS price_change_rate
+				FROM monthly_price_summary
+				WHERE trade_count > 0
+				GROUP BY deal_year, deal_month
+				ORDER BY deal_year ASC, deal_month ASC
+			</when>
+			<otherwise>
+				SELECT
+				id, sgg_cd, sgg_nm, deal_year, deal_month,
+				trade_count, avg_price, avg_price_per_pyeong, price_change_rate
+				FROM monthly_price_summary
+				WHERE sgg_cd = #{sggCd}
+				ORDER BY deal_year ASC, deal_month ASC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectDistinctRegions"
+		resultMap="MonthlyPriceSummaryResultMap">
+		SELECT DISTINCT sgg_cd, sgg_nm
+		FROM monthly_price_summary
+		ORDER BY sgg_cd ASC
+	</select>
+
+</mapper>
