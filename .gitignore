@@ -15,3 +15,5 @@ etl/logs/*.log
 target/
 web/src/main/resources/db.properties
 web/.mvn
+.factorypath
+

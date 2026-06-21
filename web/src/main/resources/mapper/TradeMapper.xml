@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.apttrade.web.mapper.TradeMapper">
+
+	<!-- 컬럼명(snake_case) <-> VO 필드(camelCase) 매핑 -->
+	<resultMap id="AptTradeResultMap" type="AptTradeVO">
+		<id column="id" property="id" />
+		<result column="dedup_key" property="dedupKey" />
+		<result column="sgg_cd" property="sggCd" />
+		<result column="umd_nm" property="umdNm" />
+		<result column="apt_nm" property="aptNm" />
+		<result column="apt_dong" property="aptDong" />
+		<result column="jibun" property="jibun" />
+		<result column="exclu_use_ar" property="excluUseAr" />
+		<result column="deal_year" property="dealYear" />
+		<result column="deal_month" property="dealMonth" />
+		<result column="deal_day" property="dealDay" />
+		<result column="deal_date" property="dealDate" />
+		<result column="deal_amount" property="dealAmount" />
+		<result column="price_per_pyeong" property="pricePerPyeong" />
+		<result column="floor" property="floor" />
+		<result column="build_year" property="buildYear" />
+		<result column="dealing_gbn" property="dealingGbn" />
+		<result column="sler_gbn" property="slerGbn" />
+		<result column="buyer_gbn" property="buyerGbn" />
+		<result column="cdeal_type" property="cdealType" />
+		<result column="cdeal_day" property="cdealDay" />
+		<result column="estate_agent_sgg_nm"
+			property="estateAgentSggNm" />
+		<result column="land_leasehold_gbn" property="landLeaseholdGbn" />
+		<result column="is_outlier" property="isOutlier" />
+	</resultMap>
+
+	<!-- 검색조건 공통 WHERE 절 -->
+	<sql id="searchWhere">
+		<where>
+			<if test="sggCd != null and sggCd != ''">
+				AND sgg_cd = #{sggCd}
+			</if>
+			<if test="aptNm != null and aptNm != ''">
+				AND apt_nm LIKE CONCAT('%', #{aptNm}, '%')
+			</if>
+			<if test="dealYear != null">
+				AND deal_year = #{dealYear}
+			</if>
+			<if test="dealMonth != null">
+				AND deal_month = #{dealMonth}
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectTradeList"
+		parameterType="TradeSearchCondition" resultMap="AptTradeResultMap">
+		SELECT
+		id, dedup_key, sgg_cd, umd_nm, apt_nm, apt_dong, jibun,
+		exclu_use_ar, deal_year, deal_month, deal_day, deal_date,
+		deal_amount, price_per_pyeong, floor, build_year,
+		dealing_gbn, sler_gbn, buyer_gbn,
+		cdeal_type, cdeal_day, estate_agent_sgg_nm, land_leasehold_gbn,
+		is_outlier
+		FROM apt_trade
+		<include refid="searchWhere" />
+		ORDER BY deal_date DESC, id DESC
+		LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+
+	<select id="countTradeList" parameterType="TradeSearchCondition"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM apt_trade
+		<include refid="searchWhere" />
+	</select>
+
+	<select id="selectTradeById" parameterType="long"
+		resultMap="AptTradeResultMap">
+		SELECT
+		id, dedup_key, sgg_cd, umd_nm, apt_nm, apt_dong, jibun,
+		exclu_use_ar, deal_year, deal_month, deal_day, deal_date,
+		deal_amount, price_per_pyeong, floor, build_year,
+		dealing_gbn, sler_gbn, buyer_gbn,
+		cdeal_type, cdeal_day, estate_agent_sgg_nm, land_leasehold_gbn,
+		is_outlier
+		FROM apt_trade
+		WHERE id = #{id}
+	</select>
+
+</mapper>
