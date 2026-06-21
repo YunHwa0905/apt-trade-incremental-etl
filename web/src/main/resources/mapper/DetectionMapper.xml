@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.apttrade.web.mapper.DetectionMapper">
+
+	<resultMap id="NewHighLowResultMap" type="NewHighLowVO">
+		<id column="id" property="id" />
+		<result column="apt_trade_id" property="aptTradeId" />
+		<result column="apt_nm" property="aptNm" />
+		<result column="sgg_cd" property="sggCd" />
+		<result column="record_type" property="recordType" />
+		<result column="price_per_pyeong" property="pricePerPyeong" />
+		<result column="deal_date" property="dealDate" />
+	</resultMap>
+
+	<resultMap id="OutlierTradeResultMap" type="OutlierTradeVO">
+		<id column="id" property="id" />
+		<result column="apt_trade_id" property="aptTradeId" />
+		<result column="sgg_cd" property="sggCd" />
+		<result column="apt_nm" property="aptNm" />
+		<result column="deal_price_per_pyeong"
+			property="dealPricePerPyeong" />
+		<result column="region_avg_price_per_pyeong"
+			property="regionAvgPricePerPyeong" />
+		<result column="deviation_rate" property="deviationRate" />
+		<result column="dealing_gbn" property="dealingGbn" />
+		<result column="sler_gbn" property="slerGbn" />
+		<result column="buyer_gbn" property="buyerGbn" />
+		<result column="deal_date" property="dealDate" />
+	</resultMap>
+
+	<sql id="highLowWhere">
+		<where>
+			<if test="sggCd != null and sggCd != ''">
+				AND sgg_cd = #{sggCd}
+			</if>
+			<if test="recordType != null and recordType != ''">
+				AND record_type = #{recordType}
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectNewHighLowList"
+		parameterType="DetectionSearchCondition"
+		resultMap="NewHighLowResultMap">
+		SELECT id, apt_trade_id, apt_nm, sgg_cd, record_type,
+		price_per_pyeong, deal_date
+		FROM new_high_low_history
+		<include refid="highLowWhere" />
+		ORDER BY deal_date DESC, id DESC
+		LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+
+	<select id="countNewHighLowList"
+		parameterType="DetectionSearchCondition" resultType="int">
+		SELECT COUNT(*)
+		FROM new_high_low_history
+		<include refid="highLowWhere" />
+	</select>
+
+	<sql id="outlierWhere">
+		<where>
+			<if test="sggCd != null and sggCd != ''">
+				AND o.sgg_cd = #{sggCd}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 이상거래는 거래유형/매도매수자구분 등 부가정보를 보여주기 위해 apt_trade와 조인 -->
+	<select id="selectOutlierList"
+		parameterType="DetectionSearchCondition"
+		resultMap="OutlierTradeResultMap">
+		SELECT
+		o.id, o.apt_trade_id, o.sgg_cd, o.apt_nm,
+		o.deal_price_per_pyeong, o.region_avg_price_per_pyeong, o.deviation_rate,
+		t.dealing_gbn, t.sler_gbn, t.buyer_gbn, t.deal_date
+		FROM outlier_trade o
+		JOIN apt_trade t ON o.apt_trade_id = t.id
+		<include refid="outlierWhere" />
+		ORDER BY ABS(o.deviation_rate) DESC
+		LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+
+	<select id="countOutlierList"
+		parameterType="DetectionSearchCondition" resultType="int">
+		SELECT COUNT(*)
+		FROM outlier_trade o
+		<include refid="outlierWhere" />
+	</select>
+
+</mapper>
