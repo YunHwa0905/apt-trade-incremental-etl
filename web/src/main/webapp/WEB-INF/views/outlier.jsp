@@ -90,6 +90,7 @@ tr:nth-child(even) {
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/views/common/nav.jsp" />
 	<h1>⚠ 이상거래 탐지</h1>
 	<p class="legend">같은 단지·같은 월 평균 평당가 대비 ±30% 이상 벗어난 거래입니다. 직거래는 음영으로
 		표시됩니다.</p>
@@ -143,7 +144,7 @@ tr:nth-child(even) {
 							</c:otherwise>
 						</c:choose></td>
 					<td>${row.dealingGbn}</td>
-					<td>${row.slerGbn}→ ${row.buyerGbn}</td>
+					<td>${row.slerGbn}→${row.buyerGbn}</td>
 				</tr>
 			</c:forEach>
 			<c:if test="${empty list}">

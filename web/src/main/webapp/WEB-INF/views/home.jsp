@@ -6,6 +6,7 @@
 <title>서울 아파트 실거래가 - 환경 테스트</title>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/views/common/nav.jsp" />
 	<h1>🏠 서울 아파트 실거래가 증분 적재 프로젝트</h1>
 	<p>${message}</p>
 	<p>서버 시간: ${serverTime}</p>

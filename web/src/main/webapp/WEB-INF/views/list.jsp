@@ -75,6 +75,7 @@ tr:nth-child(even) {
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/views/common/nav.jsp" />
 	<h1>🏠 서울 아파트 실거래가 목록</h1>
 
 	<form class="search-form"

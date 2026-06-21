@@ -26,6 +26,7 @@ select {
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/views/common/nav.jsp" />
 	<h1>📈 지역별 월별 가격 추이</h1>
 
 	<select id="sggCdSelect">

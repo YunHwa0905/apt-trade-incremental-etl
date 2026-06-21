@@ -80,6 +80,7 @@ tr:nth-child(even) {
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/views/common/nav.jsp" />
 	<h1>📊 신고가 / 신저가 히스토리</h1>
 
 	<form class="search-form"
