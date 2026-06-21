@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- DB 접속 정보를 담은 properties 파일 로드 -->
+	<context:property-placeholder
+		location="classpath:db.properties" />
+
+	<!-- Service, Repository 등 컴포넌트 스캔 (Controller는 servlet-context.xml에서 스캔) -->
+	<context:component-scan
+		base-package="com.apttrade.web.service" />
+
+	<!-- HikariCP 커넥션 풀 -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="jdbcUrl" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="maximumPoolSize" value="10" />
+		<property name="minimumIdle" value="2" />
+		<property name="connectionTimeout" value="30000" />
+	</bean>
+
+	<!-- MyBatis SqlSessionFactory -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- mapper xml 파일 위치 -->
+		<property name="mapperLocations"
+			value="classpath:mapper/**/*.xml" />
+		<!-- VO 패키지 별칭 등록 (mapper xml에서 패키지 생략하고 클래스명만 쓸 수 있게) -->
+		<property name="typeAliasesPackage"
+			value="com.apttrade.web.vo" />
+	</bean>
+
+	<!-- MyBatis Mapper 인터페이스 스캔 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.apttrade.web.mapper" />
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory" />
+	</bean>
+
+	<!-- 트랜잭션 매니저 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+</beans>

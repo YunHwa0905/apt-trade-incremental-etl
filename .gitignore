@@ -6,3 +6,12 @@ __pycache__/
 
 etl/backfill_progress.json
 etl/logs/*.log
+
+.classpath
+.project
+.settings/
+.springBeans
+.springWebflow
+target/
+web/src/main/resources/db.properties
+web/.mvn
