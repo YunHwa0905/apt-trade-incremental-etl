@@ -120,7 +120,7 @@ tr:nth-child(even) {
 			<c:forEach var="row" items="${list}">
 				<tr>
 					<td>${row.dealDate}</td>
-					<td>${row.sggCd}</td>
+					<td>${row.sggNm}</td>
 					<td>${row.aptNm}</td>
 					<td><c:choose>
 							<c:when test="${row.recordType == 'HIGH'}">
