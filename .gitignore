@@ -17,3 +17,4 @@ web/src/main/resources/db.properties
 web/.mvn
 .factorypath
 
+etl/.venv

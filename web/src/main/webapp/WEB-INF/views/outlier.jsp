@@ -104,6 +104,12 @@ tr:nth-child(even) {
 			<option value="11710" ${condition.sggCd == '11710' ? 'selected' : ''}>송파구</option>
 			<option value="11350" ${condition.sggCd == '11350' ? 'selected' : ''}>노원구</option>
 			<option value="11170" ${condition.sggCd == '11170' ? 'selected' : ''}>용산구</option>
+		</select> <select name="sortBy">
+			<option value="deviation"
+				${condition.sortBy == 'deviation' ? 'selected' : ''}>편차율 큰
+				순</option>
+			<option value="dealDate"
+				${condition.sortBy == 'dealDate' ? 'selected' : ''}>거래일 최신순</option>
 		</select>
 		<button type="submit">검색</button>
 	</form>
@@ -129,7 +135,7 @@ tr:nth-child(even) {
 			<c:forEach var="row" items="${list}">
 				<tr class="${row.dealingGbn == '직거래' ? 'direct' : ''}">
 					<td>${row.dealDate}</td>
-					<td>${row.sggCd}</td>
+					<td>${row.sggNm}</td>
 					<td>${row.aptNm}</td>
 					<td><fmt:formatNumber value="${row.dealPricePerPyeong}"
 							pattern="#,###" /></td>
@@ -144,7 +150,7 @@ tr:nth-child(even) {
 							</c:otherwise>
 						</c:choose></td>
 					<td>${row.dealingGbn}</td>
-					<td>${row.slerGbn}→${row.buyerGbn}</td>
+					<td>${row.slerGbn}→ ${row.buyerGbn}</td>
 				</tr>
 			</c:forEach>
 			<c:if test="${empty list}">
@@ -158,9 +164,9 @@ tr:nth-child(even) {
 	<div class="pagination">
 		<c:if test="${currentPage > 1}">
 			<a
-				href="${pageContext.request.contextPath}/detection/outlier?page=1&sggCd=${condition.sggCd}">&laquo;</a>
+				href="${pageContext.request.contextPath}/detection/outlier?page=1&sggCd=${condition.sggCd}&sortBy=${condition.sortBy}">&laquo;</a>
 			<a
-				href="${pageContext.request.contextPath}/detection/outlier?page=${currentPage - 1}&sggCd=${condition.sggCd}">&lsaquo;</a>
+				href="${pageContext.request.contextPath}/detection/outlier?page=${currentPage - 1}&sggCd=${condition.sggCd}&sortBy=${condition.sortBy}">&lsaquo;</a>
 		</c:if>
 		<c:forEach var="p" begin="${startPage}" end="${endPage}">
 			<c:choose>
@@ -169,15 +175,15 @@ tr:nth-child(even) {
 				</c:when>
 				<c:otherwise>
 					<a
-						href="${pageContext.request.contextPath}/detection/outlier?page=${p}&sggCd=${condition.sggCd}">${p}</a>
+						href="${pageContext.request.contextPath}/detection/outlier?page=${p}&sggCd=${condition.sggCd}&sortBy=${condition.sortBy}">${p}</a>
 				</c:otherwise>
 			</c:choose>
 		</c:forEach>
 		<c:if test="${currentPage < totalPages}">
 			<a
-				href="${pageContext.request.contextPath}/detection/outlier?page=${currentPage + 1}&sggCd=${condition.sggCd}">&rsaquo;</a>
+				href="${pageContext.request.contextPath}/detection/outlier?page=${currentPage + 1}&sggCd=${condition.sggCd}&sortBy=${condition.sortBy}">&rsaquo;</a>
 			<a
-				href="${pageContext.request.contextPath}/detection/outlier?page=${totalPages}&sggCd=${condition.sggCd}">&raquo;</a>
+				href="${pageContext.request.contextPath}/detection/outlier?page=${totalPages}&sggCd=${condition.sggCd}&sortBy=${condition.sortBy}">&raquo;</a>
 		</c:if>
 	</div>
 </body>
