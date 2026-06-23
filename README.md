@@ -14,7 +14,7 @@
 ---
 
 ## 시스템 흐름도
-<img width="885" height="660" alt="image" src="https://github.com/user-attachments/assets/bb738f48-f1d6-45b2-a62b-7afccb7c8740" />
+<img width="1440" height="1056" alt="image" src="https://github.com/user-attachments/assets/667aa69c-6295-4978-ab5c-4fb6b2c51326" />
 
 
 
